@@ -1,5 +1,6 @@
 package main
 
+//docker run -d  --restart=always  --name jyb-redis -p 6379:6379 -v $(pwd):/data/  nopassredis
 import (
 	"fmt"
 

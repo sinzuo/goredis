@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/garyburd/redigo/redis"
 )
@@ -23,16 +24,18 @@ func init() {
 func main() {
 	c := pool.Get()
 	defer c.Close()
-	_, err := c.Do("Set", "abc", 100)
-	if err != nil {
-		fmt.Println(err)
-		return
+	s1 := time.Now().Unix()
+	for {
+		_, err := redis.Strings(c.Do("brpop", "redislist", 1))
+		if err != nil {
+			fmt.Println("get abc failed,", err)
+			break
+		}
+		// for i, k := range r {
+		// 	//fmt.Println(i, k)
+		// }
 	}
-	r, err := redis.Int(c.Do("Get", "abc"))
-	if err != nil {
-		fmt.Println("get abc failed,", err)
-		return
-	}
-	fmt.Println(r)
+	s2 := time.Now().Unix()
+	fmt.Println(s1, s2)
 	pool.Close()
 }
